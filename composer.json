@@ -1,0 +1,19 @@
+{
+ "name": "michaelnoble/CMB2_RGBa_Picker",
+  "description": "A RGBa colorpicker for CMB2, field component, forked from https://github.com/JayWood/CMB2_RGBa_Picker",
+  "type": "cmb2-component",
+  "license": "GPLv2+",
+  "authors": [
+      {
+          "name": "Jay Wood",
+          "homepage": "https://github.com/JayWood"
+      },
+      {
+          "name": "Michael Noble",
+          "email": "michaelznoble@gmail.com"
+      }
+  ],
+  "keywords": [
+    "cmb2", "RGBa", "field", "wp", "metabox"
+  ]
+}

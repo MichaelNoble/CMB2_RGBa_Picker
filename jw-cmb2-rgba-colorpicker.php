@@ -28,27 +28,41 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
 
-class JW_Fancy_Color {
-	const VERSION = '0.2.0';
+if( !class_exists( 'JW_Fancy_Color' ) ) {
+    /**
+     * Class CMB2_Field_Animation
+     */
+	class JW_Fancy_Color {
+		const VERSION = '0.2.0';
 
-	public function hooks() {
-		add_action( 'cmb2_render_rgba_colorpicker', array( $this, 'render_color_picker' ), 10, 5 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'setup_admin_scripts' ) );
+		public function hooks() {
+			add_action( 'cmb2_render_rgba_colorpicker', array( $this, 'render_color_picker' ), 10, 5 );
+			add_action( 'admin_enqueue_scripts', array( $this, 'setup_admin_scripts' ) );
+		}
+
+		public function render_color_picker( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
+			echo $field_type_object->input( array(
+				'class'              => 'cmb2-colorpicker color-picker',
+				'data-default-color' => $field->args( 'default' ),
+				'data-alpha'         => 'true',
+			) );
+		}
+
+		public function setup_admin_scripts() {
+			// Get correct URL and path to wp-content
+			$content_url = untrailingslashit( dirname( dirname( get_stylesheet_directory_uri() ) ) );
+			// Fix path on Windows
+			$dir = wp_normalize_path( __DIR__ );
+			$content_dir = wp_normalize_path( untrailingslashit( WP_CONTENT_DIR ) );
+
+			$url = str_replace( $content_dir, $content_url, $dir );
+			wp_enqueue_style( 'wp-color-picker' );
+			wp_enqueue_script( 'jw-cmb2-rgba-picker-js', $url . '/js/jw-cmb2-rgba-picker.js', array( 'wp-color-picker' ), self::VERSION, true );
+		}
 	}
-
-	public function render_color_picker( $field, $field_escaped_value, $field_object_id, $field_object_type, $field_type_object ) {
-		echo $field_type_object->input( array(
-			'class'              => 'cmb2-colorpicker color-picker',
-			'data-default-color' => $field->args( 'default' ),
-			'data-alpha'         => 'true',
-		) );
-	}
-
-	public function setup_admin_scripts() {
-		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'jw-cmb2-rgba-picker-js', plugins_url( 'js/jw-cmb2-rgba-picker.js', __FILE__ ), array( 'wp-color-picker' ), self::VERSION, true );
-	}
+	$jw_fancy_color = new JW_Fancy_Color();
+	$jw_fancy_color->hooks();
 }
-$jw_fancy_color = new JW_Fancy_Color();
-$jw_fancy_color->hooks();
